@@ -10,9 +10,9 @@ Hotel.belongsTo(Place);
 Restaurant.belongsTo(Place);
 Activity.belongsTo(Place);
 
-Day.hasOne(Hotel);
-Day.hasMany(Activity);
-Day.hasMany(Restaurant);
+Day.belongsTo(Hotel);
+Day.belongsToMany(Activity, {through: 'day_activity'});
+Day.belongsToMany(Restaurant, {through: 'day_restaurant'});
 
 module.exports = {
 	db,

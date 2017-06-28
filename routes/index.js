@@ -12,7 +12,7 @@ router.get('/api/restaurants', function(req, res, next) {
     include: [Place]
   }).then(function(restaurants) {
     res.json(restaurants);
-  })
+  }).catch(next);
 
 });
 
@@ -21,7 +21,7 @@ router.get('/api/hotels', function(req, res, next) {
     include: [Place]
   }).then(function(hotels) {
     res.json(hotels);
-  })
+  }).catch(next);
 
 });
 
@@ -30,18 +30,45 @@ router.get('/api/activities', function(req, res, next) {
     include: [Place]
   }).then(function(activities) {
     res.json(activities);
-  })
+  }).catch(next);
 
 });
 
 
-
-
-router.get('/api/days', (req, res, next) => {
+router.get('/api/days', function(req, res, next){
   Day.findAll({
-    include:[Day]
-  }).then(console.log);
-})
+    include: [Hotel,Restaurant,Activity]
+  }).then(function(itinerary){
+    res.json(itinerary)
+  }).catch(next);
+
+});
+
+router.get('/api/days/:id', function(req, res, next){
+  Day.findOne({
+    where : {number : req.params.id },
+    include: [Hotel,Restaurant,Activity]
+  }).then(function(itinerary){
+    res.json(itinerary)
+  }).catch(next);
+});
+
+router.delete('/api/days/:id', function(req, res, next){
+  Day.destroy({
+    where : {number : req.params.id },
+    include: [Hotel,Restaurant,Activity]
+  }).then(function(){
+    res.send("succesfully deleted!");
+  }).catch(next);
+});
+
+// router.post('/api/days/:id', (req, res, next) => {
+//   Day.findorCreate({
+//     where: {number : req.params.id}
+//   }).spread(function( itinerary, dayCreated){
+//     res
+
+//   })
 
 router.get('/', function(req, res, next) {
   Promise.all([
