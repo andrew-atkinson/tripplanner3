@@ -35,55 +35,57 @@ router.get('/api/activities', function(req, res, next) {
 });
 
 
-router.get('/api/days', function(req, res, next){
+router.get('/api/days', function(req, res, next) {
   Day.findAll({
-    include: [Hotel,Restaurant,Activity]
-  }).then(function(itinerary){
+    include: [Hotel, Restaurant, Activity]
+  }).then(function(itinerary) {
     res.json(itinerary)
   }).catch(next);
 
 });
 
-router.get('/api/days/:id', function(req, res, next){
+router.get('/api/days/:id', function(req, res, next) {
   Day.findOne({
-    where : {number : req.params.id },
-    include: [Hotel,Restaurant,Activity]
-  }).then(function(itinerary){
+    where: { number: req.params.id },
+    include: [Hotel, Restaurant, Activity]
+  }).then(function(itinerary) {
     res.json(itinerary)
   }).catch(next);
 });
 
-router.delete('/api/days/:id', function(req, res, next){
+router.delete('/api/days/:id', function(req, res, next) {
   Day.destroy({
-    where : {number : req.params.id },
-    include: [Hotel,Restaurant,Activity]
-  }).then(function(){
+    where: { number: req.params.id },
+    include: [Hotel, Restaurant, Activity]
+  }).then(function() {
     res.send("succesfully deleted!");
   }).catch(next);
 });
 
-// router.post('/api/days/:id', (req, res, next) => {
-//   Day.findorCreate({
-//     where: {number : req.params.id}
-//   }).spread(function( itinerary, dayCreated){
-//     res
+router.post('/api/days', function(req, res, next) {
+  Day.create(
+    req.body
+  ).then(function() {
+    res.send(req.body)
+  }).catch(next);
+});
 
-//   })
+
 
 router.get('/', function(req, res, next) {
   Promise.all([
-    Hotel.findAll(),
-    Restaurant.findAll(),
-    Activity.findAll()
-  ])
-  .spread(function(dbHotels, dbRestaurants, dbActivities) {
-    res.render('index', {
-      templateHotels: dbHotels,
-      templateRestaurants: dbRestaurants,
-      templateActivities: dbActivities
-    });
-  })
-  .catch(next);
+      Hotel.findAll(),
+      Restaurant.findAll(),
+      Activity.findAll()
+    ])
+    .spread(function(dbHotels, dbRestaurants, dbActivities) {
+      res.render('index', {
+        templateHotels: dbHotels,
+        templateRestaurants: dbRestaurants,
+        templateActivities: dbActivities
+      });
+    })
+    .catch(next);
 });
 
 module.exports = router;
